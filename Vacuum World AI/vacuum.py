@@ -142,9 +142,27 @@ init_state_agent returns the original state parameters for state_agent.
 """
 
 
+def reflex_agent(percept):
+    if percept == 'dirty':
+        return 'suck'
+    elif percept == 'clean':
+        return 'north'
+    else:
+        return 'west'
+
+
+def random_agent(percept):
+    if percept == 'dirty':
+        return 'suck'
+    elif percept == 'clean':
+        choices = ['north', 'east', 'south', 'west']
+        return random.choice(choices)
+
+
+
 # Uncomment one of these to animate one of your agents
-#animate(reflex_agent, 1000)
-#animate(random_agent, 1000)
+animate(reflex_agent, 1000)
+animate(random_agent, 1000)
 #animate(state_agent, 1000, init_state_agent)
 
 # Uncomment these to run experiments comparing performance of different agents
