@@ -1,6 +1,7 @@
 # See bottom of file for instructions
 
 import matplotlib
+
 matplotlib.use("TkAgg")  # This seems necessary for the animation to work within PyCharm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -143,6 +144,7 @@ init_state_agent returns the original state parameters for state_agent.
 
 
 def reflex_agent(percept):
+    """Returns 'suck' when precept is 'dirty' and returns 'north' otherwise."""
     if percept == 'dirty':
         return 'suck'
     elif percept == 'clean':
@@ -150,35 +152,34 @@ def reflex_agent(percept):
 
 
 def random_agent(percept):
+    """Returns 'suck' when precept is 'dirty' and returns a random direction otherwise."""
     if percept == 'dirty':
         return 'suck'
     elif percept == 'clean':
         return random.choice(['west', 'east', 'north', 'south'])
 
 
-def init_state_agent():
-    previous = ['south']
-    return previous
-
-#TODO: FIX LOGIC: bias against oppposite of previous move
 def state_agent(percept, previous):
-
-    print(previous)
+    """Remembers the previous direction traveled and is biased to continue in that direction. Returns 'suck'
+     when percept is 'dirty'."""
     if percept == 'dirty':
         return 'suck', previous
     else:
-        options = ['north', 'south', 'east', 'west']
-        options.remove(previous)
-        choice = options + options + [previous]
-        choice = random.choice(choice)
-        print(choice)
-        return choice, choice
+        directions = ['north', 'south', 'east', 'west']
+        directions = directions + [previous] + [previous] + [previous] + [previous]
+        action = random.choice(directions)
+        return action, action
 
 
-# Uncomment one of these to animate one of your agents
+def init_state_agent():
+    """Initializes the state agent to have an initial bias towards 'north'."""
+    return ['north']
+
+
+#Uncomment one of these to animate one of your agents
 #animate(reflex_agent, 1000)
 #animate(random_agent, 1000)
-animate(state_agent, 1000, init_state_agent)
+#animate(state_agent, 1000, init_state_agent)
 
 # Uncomment these to run experiments comparing performance of different agents
 # NOTE: This will take a while!
