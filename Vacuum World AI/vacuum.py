@@ -175,14 +175,13 @@ def init_state_agent():
     """Initializes the state agent to have an initial bias towards 'north'."""
     return ['north']
 
-
-#Uncomment one of these to animate one of your agents
-#animate(reflex_agent, 1000)
-#animate(random_agent, 1000)
-#animate(state_agent, 1000, init_state_agent)
+# Uncomment one of these to animate one of your agents
+# animate(reflex_agent, 1000)
+# animate(random_agent, 1000)
+# animate(state_agent, 1000, init_state_agent)
 
 # Uncomment these to run experiments comparing performance of different agents
 # NOTE: This will take a while!
-#print('Reflex agent: ', experiment(reflex_agent, 10000, 20))
-#print('Random agent: ', experiment(random_agent, 10000, 20))
-#print('State agent: ', experiment(state_agent, 10000, 20, init_state_agent))
+# print('Reflex agent: ', experiment(reflex_agent, 10000, 20))
+# print('Random agent: ', experiment(random_agent, 10000, 20))
+# print('State agent: ', experiment(state_agent, 10000, 20, init_state_agent))
