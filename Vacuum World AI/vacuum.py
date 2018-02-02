@@ -160,13 +160,19 @@ def random_agent(percept):
 
 
 def state_agent(percept, previous):
-    """Remembers the previous direction traveled and is biased to continue in that direction. Returns 'suck'
-     when percept is 'dirty'."""
+    """Remembers the previous direction traveled and is strongly biased to continue in that direction, moderately
+     biased to turn, and weakly biased to move in the opposing . Returns 'suck' when percept is 'dirty'."""
+    prev_weight = 48
+    perp_weight = 15
     if percept == 'dirty':
         return 'suck', previous
     else:
         directions = ['north', 'south', 'east', 'west']
-        directions = directions + [previous] + [previous] + [previous] + [previous]
+        if previous == 'north' or previous == 'south':
+            directions += perp_weight*['east'] + perp_weight*['west']
+        elif previous == 'east' or previous == 'west':
+            directions += perp_weight*['north'] + perp_weight*['south']
+        directions = directions + prev_weight*[previous]
         action = random.choice(directions)
         return action, action
 
@@ -175,10 +181,11 @@ def init_state_agent():
     """Initializes the state agent to have an initial bias towards 'north'."""
     return ['north']
 
+
 # Uncomment one of these to animate one of your agents
 # animate(reflex_agent, 1000)
 # animate(random_agent, 1000)
-# animate(state_agent, 1000, init_state_agent)
+animate(state_agent, 1000, init_state_agent)
 
 # Uncomment these to run experiments comparing performance of different agents
 # NOTE: This will take a while!
