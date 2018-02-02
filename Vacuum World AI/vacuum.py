@@ -185,7 +185,7 @@ def init_state_agent():
 # Uncomment one of these to animate one of your agents
 # animate(reflex_agent, 1000)
 # animate(random_agent, 1000)
-animate(state_agent, 1000, init_state_agent)
+# animate(state_agent, 1000, init_state_agent)
 
 # Uncomment these to run experiments comparing performance of different agents
 # NOTE: This will take a while!
