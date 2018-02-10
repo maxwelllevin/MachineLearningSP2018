@@ -48,6 +48,7 @@ def misplaced(node):
     """8-puzzle heuristic returning the number of mismatched tiles."""
     # TODO You have to write this
     mismatched = 0
+    return mismatched
 
 
 
