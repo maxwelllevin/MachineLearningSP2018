@@ -15,12 +15,30 @@ class EightPuzzle(search.Problem):
         for i in range(n):
             action = random.choice(self.actions(self.initial))
             self.initial = self.result(self.initial, action)
-        print(prettify(self))
 
     def actions(self, state):
         """Returns the list of actions available from state."""
         # TODO You have to write this
-
+        # Get current position of blank
+        pos = state.index('_')
+        if pos == 0:
+            return [1, 3]
+        elif pos == 1:
+            return [0, 2, 4]
+        elif pos == 2:
+            return [1, 5]
+        elif pos == 3:
+            return [0, 4, 6]
+        elif pos == 4:
+            return [1, 3, 5, 7]
+        elif pos == 5:
+            return [2, 4, 8]
+        elif pos == 6:
+            return [3, 6]
+        elif pos == 7:
+            return [4, 6, 8]
+        elif pos == 8:
+            return [5, 7]
 
     def goal_test(self, state):
         """Returns true if state corresponds to _12345678."""
@@ -30,7 +48,8 @@ class EightPuzzle(search.Problem):
         """Returns the state resulting from taking action in state."""
         new = list(state)
         # TODO You have to write the middle of this, modifying new
-        new = search.Problem.result(new, action)    # Blessed be Mary if this works
+        new[state.index('_')] = state[action]
+        new[action] = '_'
         return tuple(new)
 
 
@@ -44,17 +63,37 @@ def prettify(state):
     return result
 
 
+def position_dict(state):
+    """Returns a dictionary that maps values to positions. Useful for manhattan."""
+    pos = [(0, 2), (1, 2), (2, 2), (0, 1), (1, 1), (2, 1), (0, 0), (1, 0), (2, 0)]
+    return dict(zip(list(state), pos))
+
+
 def misplaced(node):
     """8-puzzle heuristic returning the number of mismatched tiles."""
     # TODO You have to write this
     mismatched = 0
+    state = node.state
+    count = 0
+    for i in state:
+        if count == 0 and i != '_':
+            mismatched += 1
+        if count > 0 and i != str(count):
+            mismatched += 1
+        count += 1
     return mismatched
-
 
 
 def manhattan(node):
     """8-puzzle heuristic returning the sum of Manhattan distance between tiles and their correct locations."""
     # TODO You have to write this
+    dist = 0
+    state = position_dict(node.state)
+    goal = position_dict('_12345678')
+    for s in goal:
+        dist += abs(state.get(s)[0] - goal.get(s)[0])
+        dist += abs(state.get(s)[1] - goal.get(s)[1])
+    return dist
 
 
 if __name__ == '__main__':
