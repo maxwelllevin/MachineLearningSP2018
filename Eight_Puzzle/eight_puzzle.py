@@ -1,6 +1,8 @@
-import search
 import random
 from statistics import mean
+
+import search
+
 
 class EightPuzzle(search.Problem):
     """Traditional sliding-tile puzzle. A state is represented as a tuple of characters, '_' and '1' through '8'.
@@ -39,10 +41,8 @@ class EightPuzzle(search.Problem):
     def result(self, state, action):
         """Returns the state resulting from taking action in state."""
         new = list(state)
-        # TODO You have to write the middle of this, modifying new
-        if action != new.index('_'):
-            new[state.index('_')] = state[action]
-            new[action] = '_'
+        new[state.index('_')] = state[action]
+        new[action] = '_'
         return tuple(new)
 
 
@@ -57,14 +57,13 @@ def prettify(state):
 
 
 def position_dict(state):
-    """Returns a dictionary that maps values to positions. Useful for manhattan."""
-    pos = [(0, 2), (1, 2), (2, 2), (0, 1), (1, 1), (2, 1), (0, 0), (1, 0), (2, 0)]
-    return dict(zip(list(state), pos))
+    """Returns a dictionary that maps state to a grid (x,y)."""
+    grid = [(0, 2), (1, 2), (2, 2), (0, 1), (1, 1), (2, 1), (0, 0), (1, 0), (2, 0)]
+    return dict(zip(state, grid))
 
 
 def misplaced(node):
     """8-puzzle heuristic returning the number of mismatched tiles."""
-    # TODO You have to write this
     mismatched = 0
     state = node.state
     count = 0
@@ -79,7 +78,6 @@ def misplaced(node):
 
 def manhattan(node):
     """8-puzzle heuristic returning the sum of Manhattan distance between tiles and their correct locations."""
-    # TODO You have to write this
     dist = 0
     state = position_dict(node.state)
     goal = position_dict('_12345678')
@@ -90,8 +88,7 @@ def manhattan(node):
 
 
 if __name__ == '__main__':
-    # TODO This should be unchanged in the final program you hand in, but it might be useful to make a copy,
-    # comment out one copy, and modify the other to get things to run more quickly while you're debugging
+    # Compare various search methods at varying depths and print results.
     depths = (1, 2, 4, 8, 16)
     trials = 100
     path_lengths = {}
