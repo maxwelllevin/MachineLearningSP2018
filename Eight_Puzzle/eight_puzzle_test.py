@@ -3,27 +3,31 @@ grid = [(0, 2), (1, 2), (2, 2), (0, 1), (1, 1), (2, 1), (0, 0), (1, 0), (2, 0)]
 
 def actions(state):
     """Returns the list of actions available from state."""
-    # TODO You have to write this
-    # Get current position of blank
-    pos = state.index('_')
-    if pos == 0:
-        return 1, 3
-    elif pos == 1:
-        return 0, 2, 4
-    elif pos == 2:
-        return 1, 5
-    elif pos == 3:
-        return 0, 4, 6
-    elif pos == 4:
-        return 1, 3, 5, 7
-    elif pos == 5:
-        return 2, 4, 8
-    elif pos == 6:
-        return 3, 6
-    elif pos == 7:
-        return 4, 6, 8
-    elif pos == 8:
-        return 5, 7
+    # Store our available actions in this list
+    acts = []
+
+    # Map grid points (x,y) to proper indices
+    index_dict = dict(zip(grid, [0, 1, 2, 3, 4, 5, 6, 7, 8]))
+
+    # Map state to grid points (x,y)
+    pos_dict = position_dict(state)
+
+    # Print the grid location of '_'
+    # print(list(pos_dict.get('_')))
+
+    # Get the grid coordinates of '_'
+    x, y = pos_dict.get('_')
+
+    # Add available actions to our list
+    if x + 1 <= 2:
+        acts.append(index_dict.get((x + 1, y)))
+    if x - 1 >= 0:
+        acts.append(index_dict.get((x - 1, y)))
+    if y + 1 <= 2:
+        acts.append(index_dict.get((x, y + 1)))
+    if y - 1 >= 0:
+        acts.append(index_dict.get((x, y - 1)))
+    return tuple(acts)
 
 
 def result(state, action):
@@ -49,7 +53,7 @@ def prettify(state):
 def position_dict(state):
     """Returns a dictionary that maps values to positions. Useful for manhattan."""
     pos = [(0, 2), (1, 2), (2, 2), (0, 1), (1, 1), (2, 1), (0, 0), (1, 0), (2, 0)]
-    return dict(zip(list(state), pos))
+    return dict(zip(state, pos))
 
 
 def misplaced(state):
@@ -85,7 +89,9 @@ s3 = '1234_5678'  # Space in middle
 s4 = '123456_78'  # Space bottom left
 s5 = '1234567_8'  # Space bottom middle
 
-print(prettify(s3))
+active = s3
+
+print(prettify(active))
 
 """
 print(prettify(result(s3, 1)))
@@ -94,4 +100,4 @@ print(prettify(result(s3, 5)))
 print(prettify(result(s3, 7)))
 """
 
-print(actions(s3))
+print(misplaced(active))
