@@ -66,13 +66,11 @@ def misplaced(node):
     """8-puzzle heuristic returning the number of mismatched tiles."""
     mismatched = 0
     state = node.state
+    goal = '_12345678'
     count = 0
-    for i in state:
-        if count == 0 and i != '_':
+    for i in range(len(state)):
+        if state[i] != goal[i]:
             mismatched += 1
-        if count > 0 and i != str(count):
-            mismatched += 1
-        count += 1
     return mismatched
 
 
@@ -82,8 +80,8 @@ def manhattan(node):
     state = position_dict(node.state)
     goal = position_dict('_12345678')
     for s in goal:
-        dist += abs(state.get(s)[0] - goal.get(s)[0])
-        dist += abs(state.get(s)[1] - goal.get(s)[1])
+        dist += abs(state.get(s)[0] - goal.get(s)[0])  # diff in x position
+        dist += abs(state.get(s)[1] - goal.get(s)[1])  # diff in y position
     return dist
 
 
