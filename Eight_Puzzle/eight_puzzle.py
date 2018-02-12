@@ -67,7 +67,6 @@ def misplaced(node):
     mismatched = 0
     state = node.state
     goal = '_12345678'
-    count = 0
     for i in range(len(state)):
         if state[i] != goal[i]:
             mismatched += 1
