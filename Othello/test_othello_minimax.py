@@ -1,6 +1,7 @@
 from unittest import TestCase
 from othello_minimax import *
 
+
 class TestOthelloMinimax(TestCase):
 
     def setUp(self):
