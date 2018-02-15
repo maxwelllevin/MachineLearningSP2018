@@ -75,17 +75,17 @@ def flips(state, r, c, color, dr, dc):
 	# nr and nc are meant to cycle positions in the dr,dc direction
 	nr = r+dr
 	nc = c+dc
-	count = 0
 	flipped = []
-	# Count the number of tiles that would be flipped
-	while '.' != state[nr][nc] != color and 0 <= nr <= 7 and 0 <= nc <= 7:
-		count += 1
+	# Add all the tiles of the opposite color to the list, break when
+	#  the tile is the active color, and return None when it is a '.'
+	while 0 <= nr <= 7 and 0 <= nc <= 7:
+		if state[nr][nc] == color:
+			break
+		elif state[nr][nc] == '.':
+			return
+		flipped.append((nr, nc))
 		nr += dr
 		nc += dc
-	c = 1
-	# Add the tiles that would be flipped to a list and return
-	while c < count + 1:    # Add 1 to append the correct (r,c) tuple
-		flipped.append((r + c*dr, c + c*dc))
 	return flipped
 
 

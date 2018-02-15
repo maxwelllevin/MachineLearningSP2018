@@ -7,7 +7,13 @@ def evaluate(state):
     If the game is not over, returns score / 100, giving a number from -0.64 to 0.64.
     This way, search will prefer winning to merely being ahead by any amount.
     """
-    # TODO You have to write this
+    if game_over(state):
+	    if score(state) > 0:
+		    return 1
+	    elif score(state) < 0:
+		    return -1
+	    else: return 0
+	return score(state)/100
 
 
 def minimax(state, player, max_depth):
@@ -15,8 +21,12 @@ def minimax(state, player, max_depth):
     Returns the value of state with player to play. max_depth gives the search depth; if 0, returns the evaluation
     of state.
     """
-    # TODO You have to write this
-
+    score = evaluate(state)
+    if score is not None: return score
+    successors = (successor(state, move, player) for move in legal_moves(state))
+    if player == 'X':
+	    return max(minimax(s, 'O') for s in successors)else:
+	return min(minimax(s, 'X') for s in successors)
 
 def best_move(state, player, max_depth):
     """Returns player's best move. max_depth, which must be at least 1, gives the search depth."""
