@@ -73,14 +73,13 @@ def flips(state, r, c, color, dr, dc):
 	nc = c + dc
 	while 0 <= nr < 8 and 0 <= nc < 8:
 		if state[nr][nc] == color:
-			break
+			return flipped_tiles
 		elif state[nr][nc] == '.':
 			return []
-		elif state[nr][nc] == opposite(color):
-			flipped_tiles.append((nr, nc))
+		flipped_tiles.append((nr, nc))
 		nr += dr
 		nc += dc
-	return flipped_tiles
+	return []
 
 
 OFFSETS = ((-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1))
@@ -149,3 +148,24 @@ def game_over(state):
 	Returns true if neither player can flip anything.
 	"""
 	return legal_moves(state, '#')[0] == 'pass' and legal_moves(state, 'O')[0] == 'pass'
+
+
+# =============== TEST STUFF =============== #
+
+
+case2 = diagram_to_state(['....O...',
+						  '....#...',
+						  '....#...',
+						  '....#...',
+						  '........',
+						  '........',
+						  '........',
+						  '........'])
+
+moves = legal_moves(case2, '#')
+
+print(moves)
+
+flipped = flips(case2, 1, 3, '#', -1, 1)
+
+print(flipped)
