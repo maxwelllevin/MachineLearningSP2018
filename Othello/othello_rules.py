@@ -72,21 +72,18 @@ def flips(state, r, c, color, dr, dc):
 	:param dc: The amount to adjust c on each step along the line.
 	:return A list of (r, c) pairs of pieces that would be flipped.
 	"""
-	# nr and nc are meant to cycle positions in the dr,dc direction
-	nr = r+dr
-	nc = c+dc
-	flipped = []
-	# Add all the tiles of the opposite color to the list, break when
-	#  the tile is the active color, and return None when it is a '.'
-	while 0 <= nr <= 7 and 0 <= nc <= 7:
-		if state[nr][nc] == color:
+	flipped_tiles = []
+	y = r + dr
+	x = c + dc
+	while (0 <= y < 8 and 0 <= x < 8):
+		if (state[y][x] == color):
 			break
-		elif state[nr][nc] == '.':
-			return
-		flipped.append((nr, nc))
-		nr += dr
-		nc += dc
-	return flipped
+		elif (state[y][x] == '.'):
+			return []
+		flipped_tiles.append((y, x))
+		y += dr
+		x += dc
+	return flipped_tiles
 
 
 # TODO You have to write this
@@ -99,7 +96,9 @@ def flips_something(state, r, c, color):
 	"""Returns True if color playing at r, c in state would flip something."""
 	for pair in OFFSETS:
 		dr, dc = pair[0], pair[1]
-		if flips(state, r, c, color, dr, dc): return True
+		if flips(state, r, c, color, dr, dc):
+			print(dr, dc)
+			return True
 	return False
 
 
@@ -112,12 +111,12 @@ def legal_moves(state, color):
 	legal = []
 	for r in range(8):
 		for c in range(8):
-			if flips(state, r, c, color):
+			if state[r][c] == '.' and flips_something(state, r, c, color):
 				legal.append((r, c))
+				print('\n', r, ', ', c)
 	if len(legal) == 0:
-		legal.append('pass')
+		return ['pass']
 	return legal
-# TODO You have to write this
 
 
 def successor(state, move, color):
@@ -125,6 +124,11 @@ def successor(state, move, color):
 	Returns the state that would result from color playing move (which is either a pair (r, c) or 'pass'.
 	Assumes move is legal.
 	"""
+	# find every piece that would be flipped and flip it
+	if move == 'pass': return state
+	flipped = []
+	for pair in OFFSETS:
+		flipped.append(flips(state, move[0], move[1], color, pair[0], pair[1]))
 
 
 # TODO You have to write this
@@ -135,9 +139,8 @@ def score(state):
 	Returns the scores in state. More positive values (up to 64 for occupying the entire board) are better for '#'.
 	More negative values (down to -64) are better for 'O'.
 	"""
-
-
-# TODO You have to write this
+	count = count_pieces(state)
+	return count.get('#') - count.get('O')
 
 
 def game_over(state):
@@ -145,3 +148,18 @@ def game_over(state):
 	Returns true if neither player can flip anything.
 	"""
 # TODO You have to write this
+
+
+
+
+case1 = diagram_to_state(['...#O...',
+                                       '...#....',
+                                       '....O...',
+                                       '..OO#...',
+                                       '........',
+                                       '..OOO#O.',
+                                       '........',
+                                       '........'])
+
+print(flips_something(case1, 1,5, '#'))
+print(flips(case1, 1, 5, '#'))

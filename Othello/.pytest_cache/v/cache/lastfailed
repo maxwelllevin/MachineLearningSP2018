@@ -8,15 +8,9 @@
   "test_othello_minimax.py::TestOthelloMinimax::test_evaluate_scores_unifinished_game": true,
   "test_othello_minimax.py::TestOthelloMinimax::test_minimax_evaluates_state_at_depth_0": true,
   "test_othello_minimax.py::TestOthelloMinimax::test_minimax_evaluates_state_at_depth_1": true,
-  "test_othello_rules.py::TestOthelloRules::test_flips_does_not_find_excess_pieces": true,
-  "test_othello_rules.py::TestOthelloRules::test_flips_does_not_modify_state": true,
-  "test_othello_rules.py::TestOthelloRules::test_flips_finds_correct_pieces": true,
-  "test_othello_rules.py::TestOthelloRules::test_flips_something_can_return_false": true,
-  "test_othello_rules.py::TestOthelloRules::test_flips_something_can_return_true": true,
   "test_othello_rules.py::TestOthelloRules::test_game_over_can_return_true": true,
   "test_othello_rules.py::TestOthelloRules::test_game_over_detects_no_legal_moves": true,
   "test_othello_rules.py::TestOthelloRules::test_legal_move_offers_pass_when_nothing_can_be_flipped": true,
   "test_othello_rules.py::TestOthelloRules::test_legal_moves_finds_all_moves": true,
-  "test_othello_rules.py::TestOthelloRules::test_score_counts_correctly": true,
   "test_othello_rules.py::TestOthelloRules::test_successor_produces_correct_successor": true
 }
