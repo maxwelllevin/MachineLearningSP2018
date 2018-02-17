@@ -99,7 +99,6 @@ def legal_moves(state, color):
 	Returns a list of legal moves ((r, c) pairs) that color can make from state. Note that a player must flip
 	something if possible; otherwise they must play the special move 'pass'.
 	"""
-	# TODO: FIND THE BUG
 	legal = []
 	for r in range(8):
 		for c in range(8):
