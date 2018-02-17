@@ -120,7 +120,8 @@ def successor(state, move, color):
 	# Else, create a list of lists of pieces that would be flipped
 	flipped = []
 	for pair in OFFSETS:
-		flipped.append(flips(state, move[0], move[1], color, pair[0], pair[1]))
+		piece = flips(state, move[0], move[1], color, pair[0], pair[1])
+		if piece: flipped.append(piece)
 
 	# Make a copy of the current state and flip all the pieces in copy that would be flipped in state
 	copy = deepcopy(state)
