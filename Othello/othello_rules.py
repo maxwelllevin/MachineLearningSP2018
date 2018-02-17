@@ -7,13 +7,13 @@ def diagram_to_state(diagram):
 
 
 INITIAL_STATE = diagram_to_state(['........',
-                                  '........',
-                                  '........',
-                                  '...#O...',
-                                  '...O#...',
-                                  '........',
-                                  '........',
-                                  '........'])
+								  '........',
+								  '........',
+								  '...#O...',
+								  '...O#...',
+								  '........',
+								  '........',
+								  '........'])
 
 
 def count_pieces(state):
@@ -33,27 +33,23 @@ def prettify(state):
 	oh_count = count.get('O')
 	dot_count = count.get('.')
 	pretty = ' 01234567\n' + \
-	         '0' + ''.join(state[0]) + '0\n' + \
-	         '1' + ''.join(state[1]) + '1\n' + \
-	         '2' + ''.join(state[2]) + '2\n' + \
-	         '3' + ''.join(state[3]) + '3\n' + \
-	         '4' + ''.join(state[4]) + '4\n' + \
-	         '5' + ''.join(state[5]) + '5\n' + \
-	         '6' + ''.join(state[6]) + '6\n' + \
-	         '7' + ''.join(state[7]) + '7\n' + \
-	         ' 01234567\n' + \
-	         "{'#': " + str(pound_count) + \
-	         ", 'O': " + str(oh_count) + \
-	         ", '.': " + str(dot_count) + "}\n"
+			 '0' + ''.join(state[0]) + '0\n' + \
+			 '1' + ''.join(state[1]) + '1\n' + \
+			 '2' + ''.join(state[2]) + '2\n' + \
+			 '3' + ''.join(state[3]) + '3\n' + \
+			 '4' + ''.join(state[4]) + '4\n' + \
+			 '5' + ''.join(state[5]) + '5\n' + \
+			 '6' + ''.join(state[6]) + '6\n' + \
+			 '7' + ''.join(state[7]) + '7\n' + \
+			 ' 01234567\n' + \
+			 "{'#': " + str(pound_count) + \
+			 ", 'O': " + str(oh_count) + \
+			 ", '.': " + str(dot_count) + "}\n"
 	return pretty
-
-
-print(prettify(INITIAL_STATE))
 
 
 def opposite(color):
 	"""opposite('#') returns 'O'. opposite('O') returns '#'."""
-	# TODO You have to write this
 	if color == '#':
 		return 'O'
 	else:
@@ -73,20 +69,18 @@ def flips(state, r, c, color, dr, dc):
 	:return A list of (r, c) pairs of pieces that would be flipped.
 	"""
 	flipped_tiles = []
-	y = r + dr
-	x = c + dc
-	while (0 <= y < 8 and 0 <= x < 8):
-		if (state[y][x] == color):
+	nr = r + dr
+	nc = c + dc
+	while 0 <= nr < 8 and 0 <= nc < 8:
+		if state[nr][nc] == color:
 			break
-		elif (state[y][x] == '.'):
+		elif state[nr][nc] == '.':
 			return []
-		flipped_tiles.append((y, x))
-		y += dr
-		x += dc
+		elif state[nr][nc] == opposite(color):
+			flipped_tiles.append((nr, nc))
+		nr += dr
+		nc += dc
 	return flipped_tiles
-
-
-# TODO You have to write this
 
 
 OFFSETS = ((-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1))
@@ -97,10 +91,8 @@ def flips_something(state, r, c, color):
 	for pair in OFFSETS:
 		dr, dc = pair[0], pair[1]
 		if flips(state, r, c, color, dr, dc):
-			print(dr, dc)
 			return True
 	return False
-
 
 
 def legal_moves(state, color):
@@ -108,12 +100,12 @@ def legal_moves(state, color):
 	Returns a list of legal moves ((r, c) pairs) that color can make from state. Note that a player must flip
 	something if possible; otherwise they must play the special move 'pass'.
 	"""
+	# TODO: FIND THE BUG
 	legal = []
 	for r in range(8):
 		for c in range(8):
 			if state[r][c] == '.' and flips_something(state, r, c, color):
 				legal.append((r, c))
-				print('\n', r, ', ', c)
 	if len(legal) == 0:
 		return ['pass']
 	return legal
@@ -124,14 +116,23 @@ def successor(state, move, color):
 	Returns the state that would result from color playing move (which is either a pair (r, c) or 'pass'.
 	Assumes move is legal.
 	"""
-	# find every piece that would be flipped and flip it
+	# If no move is to be played then return the current state
 	if move == 'pass': return state
+
+	# Else, create a list of lists of pieces that would be flipped
 	flipped = []
 	for pair in OFFSETS:
 		flipped.append(flips(state, move[0], move[1], color, pair[0], pair[1]))
 
-
-# TODO You have to write this
+	# Make a copy of the current state and flip all the pieces in copy that would be flipped in state
+	copy = deepcopy(state)
+	for flip_list in flipped:
+		for pair in flip_list:
+			r = pair[0]
+			c = pair[1]
+			copy[r][c] = opposite(state[r][c])
+	copy[move[0]][move[1]] = color
+	return copy
 
 
 def score(state):
@@ -147,19 +148,4 @@ def game_over(state):
 	"""
 	Returns true if neither player can flip anything.
 	"""
-# TODO You have to write this
-
-
-
-
-case1 = diagram_to_state(['...#O...',
-                                       '...#....',
-                                       '....O...',
-                                       '..OO#...',
-                                       '........',
-                                       '..OOO#O.',
-                                       '........',
-                                       '........'])
-
-print(flips_something(case1, 1,5, '#'))
-print(flips(case1, 1, 5, '#'))
+	return legal_moves(state, '#')[0] == 'pass' and legal_moves(state, 'O')[0] == 'pass'
