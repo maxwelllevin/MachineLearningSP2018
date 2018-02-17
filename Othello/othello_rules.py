@@ -148,24 +148,3 @@ def game_over(state):
 	Returns true if neither player can flip anything.
 	"""
 	return legal_moves(state, '#')[0] == 'pass' and legal_moves(state, 'O')[0] == 'pass'
-
-
-# =============== TEST STUFF =============== #
-
-
-case2 = diagram_to_state(['....O...',
-						  '....#...',
-						  '....#...',
-						  '....#...',
-						  '........',
-						  '........',
-						  '........',
-						  '........'])
-
-moves = legal_moves(case2, '#')
-
-print(moves)
-
-flipped = flips(case2, 1, 3, '#', -1, 1)
-
-print(flipped)
