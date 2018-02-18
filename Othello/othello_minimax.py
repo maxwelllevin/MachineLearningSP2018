@@ -24,7 +24,7 @@ def minimax(state, player, max_depth):
 	"""
 	if max_depth == 0:
 		return evaluate(state)
-	successors = (successor(state, move, player) for move in legal_moves(state))
+	successors = (successor(state, move, player) for move in legal_moves(state, player))
 	if player == '#':
 		return max(minimax(s, 'O', max_depth - 1) for s in successors)
 	else:
@@ -33,9 +33,11 @@ def minimax(state, player, max_depth):
 
 def best_move(state, player, max_depth):
 	"""Returns player's best move. max_depth, which must be at least 1, gives the search depth."""
-
-
-# TODO You have to write this
+	moves = legal_moves(state, player)
+	if player == '#':
+		return max(moves, key=lambda m: minimax(successor(state, m, 'O'), '#', max_depth))
+	else:
+		return min(moves, key=lambda m: minimax(successor(state, m, '#'), 'O', max_depth))
 
 
 if __name__ == '__main__':
