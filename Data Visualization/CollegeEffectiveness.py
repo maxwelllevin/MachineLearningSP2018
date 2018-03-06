@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.ticker import NullFormatter
+
 
 degree_filename = 'degrees-that-pay-back.csv'
 
@@ -21,3 +21,5 @@ mid_mean_salary = [d[2] for d in data]
 
 # Percentage increase from start to median salary
 growth = [d[3] for d in data]
+
+print(majors)
