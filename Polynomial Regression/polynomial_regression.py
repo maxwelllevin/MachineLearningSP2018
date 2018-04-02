@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
+plt.rcParams["font.family"] = "Times New Roman"
+
 
 def build_function(degree, coeffs=np.zeros((1, 1))):
 	""" Builds a polynomial of given degree with random coefficients. """
@@ -18,78 +20,89 @@ def build_function(degree, coeffs=np.zeros((1, 1))):
 	return lambda x: sum([a * x ** i for i, a in enumerate(coeffs)])
 
 
-def steve(numPoints):
+def gen_x_values(num_pts):
 	""" Generates random x values between -2 and 2. """
-	return 4 * np.random.random((numPoints, 1)) - 2
+	return 4 * np.random.random((num_pts, 1)) - 2
 
 
-def getYValsWithNoise(xVals, func):
+def gen_training_data(x_vals, func):
 	""" Generate y values given a set of x values and a function. Adds noise that is normally distributed with mean 0 and standard deviation 1. """
-	return np.array([func(x) + np.random.normal() for x in xVals])
+	return np.array([func(x) + np.random.normal() for x in x_vals])
 
 
-def getYVals(xVals, func):
+def gen_testing_data(x_vals, func):
 	""" Generate y values given a set of x values and a function. """
-	return np.array([func(x) for x in xVals])
+	return np.array([func(x) for x in x_vals])
 
 
-# ======== Generate Testing Data ======== #
-
-# Random Polynomial functions used to generate data
-f1, f2, f20 = build_function(1), build_function(2), build_function(20)
-
-# Test data for 10 points
-x_test_10 = steve(10)
-y_test_d1_10, y_test_d2_10, y_test_d20_10 = getYVals(x_test_10, f1), getYVals(x_test_10, f2), getYVals(x_test_10, f20)
-
-# Test data for 100 points
-x_test_100 = steve(100)
-y_test_d1_100, y_test_d2_100, y_test_d20_100 = getYVals(x_test_100, f1), getYVals(x_test_100, f2), getYVals(x_test_100,
-																											f20)
-
-# Test data for 1000 points
-x_test_1000 = steve(1000)
-y_test_d1_1000, y_test_d2_1000, y_test_d20_1000 = getYVals(x_test_1000, f1), getYVals(x_test_1000, f2), getYVals(
-	x_test_1000, f20)
-
-# ======== Generate Training Data ======== #
+def mean_squared_error(func_a, func_b, x_vals):
+	""" returns the mean squared error of two functions with a shared np.array of x values """
+	summation = 0
+	for x in x_vals:
+		summation += (func_a(x) - func_b(x))**2
+	return summation / x_vals.size
 
 
-# ======== Plot Stuff ======== #
-f2 = build_function(3)
-x1 = steve(100)
-y1 = getYValsWithNoise(x1, f2)
-
-poly_features = PolynomialFeatures(degree=3, include_bias=False)
-X_poly = poly_features.fit_transform(x1)
-lin_reg = LinearRegression()
-lin_reg.fit(X_poly, y1)
-
-# print(lin_reg.intercept_)
-# print(lin_reg.coef_)
-coefficients = np.insert(lin_reg.coef_, 0, lin_reg.intercept_)
-
-lx = np.arange(-2, 2, .001)
-ly = getYVals(lx, build_function(2, coefficients))
-
-plt.plot(lx, ly, color="orange", linewidth=3)
-plt.scatter(x1, y1)
-
-plt.xlim((-2, 2))
-# plt.ylim((-10,10))
-plt.show()
-
-# ======== Fit Polynomials ======== #
-
-# TODO: Use sklearn.linear_model.LinearRegression to fit polynomials of various degrees to the training data
-
-# TODO: Be able to produce plots showing the training and testing data, true function, and several approximation functions
-
-# TODO: Do this for 10, 100, and 1000 data points for polynomials of degrees 1, 2, and 20
+def fit_polynomial(training_x, training_y, deg):
+	""" Send training data and the degree you would like to fit to. Returns a function. """
+	if deg == 0:
+		return lambda x: sum(training_y) / len(training_y)
+	poly_features = PolynomialFeatures(degree=deg, include_bias=False)
+	X_poly = poly_features.fit_transform(training_x)
+	lin_reg = LinearRegression()
+	lin_reg.fit(X_poly, training_y)
+	coefficients = np.insert(lin_reg.coef_, 0, lin_reg.intercept_)
+	return build_function(2, coefficients)
 
 
-# ======== Compare Polynomials ======== #
+def single_run(num_points):
+	f4 = build_function(4)
+	x1 = gen_x_values(num_points)
+	y1 = gen_training_data(x1, f4)
 
-# TODO: Repeat the above experiment 100 times, using all of the model polynomial degrees 0 through 20.
+	x_values = np.arange(-2, 2, .001)
+	guess_y_d1 = gen_testing_data(x_values, fit_polynomial(x1, y1, 1))
+	guess_y_d2 = gen_testing_data(x_values, fit_polynomial(x1, y1, 2))
+	guess_y_d20 = gen_testing_data(x_values, fit_polynomial(x1, y1, 20))
+	real_y = gen_testing_data(x_values, f4)
 
-# TODO: For 10, 100, and 1000 data points, produce a plot showing the average mean squared error (across all 100 runs) for the training and testing sets
+	plt.plot(x_values, real_y, color="green", linewidth=1, label="Actual")
+	plt.plot(x_values, guess_y_d1, color="orange", linewidth=1, label="Fit 1 Degree")
+	plt.plot(x_values, guess_y_d2, color="blue", linewidth=1, label="Fit 2 Degrees")
+	plt.plot(x_values, guess_y_d20, color="red", linewidth=1, label="Fit 20 Degrees")
+	plt.scatter(x1, y1, s=2, label="Training Data")
+
+	plt.xlim((-2, 2))
+	plt.ylim((-10, 10))
+	plt.legend()
+	plt.title("Polynomial Fitting for " + str(num_points) + " Data Points")
+	plt.show()
+
+
+def average_error_run(num_points):
+	mean_squared_errors = []
+	sum_mean_squared_errors = [0] * 21
+
+	for run in range(100):
+		f4 = build_function(4)
+		x1 = gen_x_values(num_points)
+		y1 = gen_training_data(x1, f4)
+		x_values = np.arange(-2, 2, 0.001)
+
+		for degree in range(21):
+			sum_mean_squared_errors[degree] += mean_squared_error(f4, fit_polynomial(x1, y1, degree), x_values) / 100
+
+	plt.plot(range(21), sum_mean_squared_errors)
+	plt.title("Mean Squared Error for " + str(num_points) + " Data Points")
+	plt.xlabel("Degrees")
+	plt.xticks(np.arange(0, 21, step=1))
+	plt.ylabel("Mean Squared Error")
+	plt.show()
+
+
+single_run(10)
+single_run(100)
+single_run(1000)
+average_error_run(10)
+average_error_run(100)
+average_error_run(1000)
