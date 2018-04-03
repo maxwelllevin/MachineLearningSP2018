@@ -35,14 +35,6 @@ def gen_testing_data(x_vals, func):
 	return np.array([func(x) for x in x_vals])
 
 
-def mean_squared_error(func_a, func_b, x_vals):
-	""" returns the mean squared error of two functions with a shared np.array of x values """
-	summation = 0
-	for x in x_vals:
-		summation += (func_a(x) - func_b(x))**2
-	return summation / x_vals.size
-
-
 def fit_polynomial(training_x, training_y, deg):
 	""" Send training data and the degree you would like to fit to. Returns a function. """
 	if deg == 0:
@@ -71,7 +63,6 @@ def single_run(num_points):
 	plt.plot(x_values, guess_y_d2, color="blue", linewidth=1, label="Fit 2 Degrees")
 	plt.plot(x_values, guess_y_d20, color="red", linewidth=1, label="Fit 20 Degrees")
 	plt.scatter(x1, y1, s=2, label="Training Data")
-
 	plt.xlim((-2, 2))
 	plt.ylim((-10, 10))
 	plt.legend()
@@ -79,30 +70,57 @@ def single_run(num_points):
 	plt.show()
 
 
-def average_error_run(num_points):
-	mean_squared_errors = []
-	sum_mean_squared_errors = [0] * 21
+def mse(data1, data2):
+	if len(data1) != len(data2):
+		print("ERROR: Data arrays are not of the same length! ")
+		print("ERROR: Data array 1 is of length ", len(data1), " while data array 2 is of length ", len(data2), ".")
+		exit(-1)
+	error = 0
+	for a, b in zip(data1, data2):
+		error += (a - b) ** 2
+	return error / len(data1)
 
-	for run in range(100):
-		f4 = build_function(4)
-		x1 = gen_x_values(num_points)
-		y1 = gen_training_data(x1, f4)
-		x_values = np.arange(-2, 2, 0.001)
 
-		for degree in range(21):
-			sum_mean_squared_errors[degree] += mean_squared_error(f4, fit_polynomial(x1, y1, degree), x_values) / 100
+def avg_mse(num_points, num_runs=100, num_degrees=20, f_degree=4):
+	""" Computes and plots MSE for training and testing data averaged over 100 runs for fit polynomials of degree 0 through 20. """
+	train_mse = [0] * (num_degrees + 1)
+	test_mse = [0] * (num_degrees + 1)
+	for run in range(num_runs):
+		func = build_function(f_degree)
 
-	plt.plot(range(21), sum_mean_squared_errors)
+		# Gen training and testing data
+		train_x = gen_x_values(num_points)
+		train_y = gen_training_data(train_x, func)
+		test_x = np.linspace(-2, 2, num_points)
+		test_y = gen_testing_data(test_x, func)
+
+		# Fit the polynomial for each degree
+		for deg in range(1, 21):
+			fit_deg = fit_polynomial(train_x, train_y, deg)  # Fit the polynomial from the training data
+			train_fit_y = gen_testing_data(train_x, fit_deg)  # Get the fit polynomial values for the training x values
+			test_fit_y = gen_testing_data(test_x, fit_deg)  # Same but for the testing x values
+			train_mse[deg] += mse(train_y, train_fit_y) / num_runs
+			test_mse[deg] += mse(test_y, test_fit_y) / num_runs
+
+		# Fit the polynomial for degree 0
+		fit_deg = sum(train_y) / len(train_y)
+		train_mse[0] = mse(train_y, [fit_deg] * len(train_y))
+		test_mse[0] = mse(test_y, [fit_deg] * len(test_y))
+
+	plt.plot(range(21), train_mse, label="Training Set")
+	plt.plot(range(21), test_mse, color="orange", label="Validation Set")
 	plt.title("Mean Squared Error for " + str(num_points) + " Data Points")
 	plt.xlabel("Degrees")
 	plt.xticks(np.arange(0, 21, step=1))
 	plt.ylabel("Mean Squared Error")
+	plt.ylim(0, test_mse[0])
+	plt.legend()
 	plt.show()
 
 
 single_run(10)
 single_run(100)
 single_run(1000)
-average_error_run(10)
-average_error_run(100)
-average_error_run(1000)
+avg_mse(10)
+avg_mse(100)
+avg_mse(1000)
