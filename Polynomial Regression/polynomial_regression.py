@@ -59,7 +59,7 @@ def fit_polynomial(training_x, training_y, deg):
 	return build_function(2, coefficients)
 
 
-def single_run(num_points, f_degree=3):
+def single_run(num_points, f_degree=4):
 	""" Plots fitting of testing data for polynomials of 1, 2, and 20 degrees. """
 	func = build_function(f_degree)
 
@@ -87,7 +87,7 @@ def single_run(num_points, f_degree=3):
 	plt.show()
 
 
-def avg_mse(num_points, num_runs=100, num_degrees=20, f_degree=3):
+def avg_mse(num_points, num_runs=100, num_degrees=20, f_degree=4):
 	""" Computes and plots MSE for training and testing data averaged over 100 runs for fit polynomials of degree 0 through 20. """
 	train_mse = [0] * (num_degrees + 1)
 	test_mse = [0] * (num_degrees + 1)
@@ -115,7 +115,7 @@ def avg_mse(num_points, num_runs=100, num_degrees=20, f_degree=3):
 
 	# Plot the results
 	plt.plot(range(num_degrees + 1), train_mse, label="Training Set")
-	plt.plot(range(num_degrees + 1), test_mse, color="orange", label="Validation Set")
+	plt.plot(range(num_degrees + 1), test_mse, color="orange", label="Testing Set")
 	plt.title("Mean Squared Error for " + str(num_points) + " Data Points")
 	plt.xlabel("Degrees")
 	plt.xticks(np.arange(0, num_degrees + 1, step=1))
